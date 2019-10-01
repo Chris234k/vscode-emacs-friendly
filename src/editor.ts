@@ -56,9 +56,12 @@ export class Editor {
 	}
 
 	getSelectionText(): string {
-		let r = this.getSelectionRange()
-		return r ? vscode.window.activeTextEditor.document.getText(r) : ''
-	}
+        return this.getTextInRange(this.getSelectionRange())
+    }
+    
+    getTextInRange(range: vscode.Range): string {
+        return range ? vscode.window.activeTextEditor.document.getText(range) : ''
+    }
 
 	setSelection(start: vscode.Position, end: vscode.Position): void {
 		let editor = vscode.window.activeTextEditor;
@@ -90,12 +93,14 @@ export class Editor {
 		// If there is something other than whitespace in the selection, we do not cut the EOL too
 		if (!isOnLastLine && !txt.match(/^\s*$/)) {
 			await vscode.commands.executeCommand("cursorMove", {to: "left", by: "character"})
-			endPos = this.getCurrentPos()
+            endPos = this.getCurrentPos()
+            
+            // Update range with new endPos
+            range = new vscode.Range(startPos, endPos);
 		}
 
-		// Select it now, cut the selection, remember the position in case of multiple cuts from same spot
-		this.setSelection(startPos, endPos)
-		let promise = this.cut(this.lastKill != null && startPos.isEqual(this.lastKill))
+		// Cut text out of range
+		let promise = this.cut_range(range, this.lastKill != null && startPos.isEqual(this.lastKill))
 
 		promise.then(() => {
 			this.justDidKill = true
@@ -108,16 +113,39 @@ export class Editor {
 	copy(): void {
 		vscode.env.clipboard.writeText(this.getSelectionText())
 		vscode.commands.executeCommand("emacs.exitMarkMode")
-	}
+    }
+    
+    cut() {
+        vscode.env.clipboard.writeText(this.getSelectionText())
+        let t = Editor.delete(this.getSelectionRange());
+		vscode.commands.executeCommand("emacs.exitMarkMode");
+		return t
+    }
 
-	async cut(appendClipboard?: boolean): Promise<boolean> {
+	// async cut_range(range: vscode.Range, appendClipboard?: boolean): Promise<boolean> {
+	// 	if (appendClipboard) {
+	// 		const text = await vscode.env.clipboard.readText();
+    //         vscode.env.clipboard.writeText(text + this.getTextInRange(range))
+    //         let t = Editor.delete(this.getSelectionRange());
+    //         vscode.commands.executeCommand("emacs.exitMarkMode");
+    //         return t
+    //     } else {
+            
+    //     }
+    // }
+    
+    
+	async cut_range(range: vscode.Range, appendClipboard?: boolean): Promise<boolean> {
+        let rangeText = this.getTextInRange(range);
+        
 		if (appendClipboard) {
 			const text = await vscode.env.clipboard.readText();
-			vscode.env.clipboard.writeText(text + this.getSelectionText())
+            vscode.env.clipboard.writeText(text + rangeText)
 		} else {
-			vscode.env.clipboard.writeText(this.getSelectionText())
-		}
-		let t = Editor.delete(this.getSelectionRange());
+			vscode.env.clipboard.writeText(rangeText)
+        }
+        
+		let t = Editor.delete(range);
 		vscode.commands.executeCommand("emacs.exitMarkMode");
 		return t
 	}
