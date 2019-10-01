@@ -417,7 +417,7 @@
                 "key": "ctrl+x r",
                 "command": "workbench.action.openRecent"
             },
-			{
+            {
                 "key": "ctrl+x z",
                 "command": "workbench.action.toggleZenMode"
             },
