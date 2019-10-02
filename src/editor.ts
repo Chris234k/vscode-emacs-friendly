@@ -81,10 +81,12 @@ export class Editor {
             isOnLastLine = Editor.isOnLastLine();
             
         // cut from current pos to start of next line
-        let nextLine = vscode.window.activeTextEditor.document.lineAt(startPos.line+1);
-        let endPos = nextLine.range.start;
-        
-        // TODO(chris) can't kill last line!
+        let endPos: vscode.Position;
+        if(isOnLastLine) { // "next line" doesn't exist on the last line
+            endPos = vscode.window.activeTextEditor.document.lineAt(startPos.line).range.end;
+        } else {
+            endPos = vscode.window.activeTextEditor.document.lineAt(startPos.line+1).range.start;
+        }
 
 		let range = new vscode.Range(startPos, endPos);
 		let	txt = vscode.window.activeTextEditor.document.getText(range);
