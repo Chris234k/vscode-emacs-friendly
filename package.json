@@ -57,17 +57,17 @@
                 "when": "editorTextFocus"
             },
             {
-                "key": "ctrl+b",
+                "key": "ctrl+a",
                 "command": "emacs.cursorLeft",
                 "when": "editorTextFocus"
             },
             {
-                "key": "ctrl+b",
+                "key": "ctrl+a",
                 "command": "emacs.cursorLeft",
                 "when": "terminalFocus"
             },
             {
-                "key": "ctrl+b",
+                "key": "ctrl+a",
                 "command": "closeFindWidget",
                 "when": "editorFocus && findWidgetVisible"
             },
@@ -127,17 +127,17 @@
                 "when": "editorTextFocus"
             },
             {
-                "key": "ctrl+a",
+                "key": "ctrl+q",
                 "command": "emacs.cursorHome",
                 "when": "editorTextFocus"
             },
             {
-                "key": "ctrl+a",
+                "key": "ctrl+q",
                 "command": "emacs.cursorHome",
                 "when": "terminalFocus"
             },
             {
-                "key": "ctrl+a",
+                "key": "ctrl+q",
                 "command": "closeFindWidget",
                 "when": "editorFocus && findWidgetVisible"
             },
@@ -167,7 +167,7 @@
                 "when": "editorTextFocus"
             },
             {
-                "key": "alt+b",
+                "key": "alt+a",
                 "command": "emacs.cursorWordLeft",
                 "when": "editorTextFocus"
             },
